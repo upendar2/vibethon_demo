@@ -1,6 +1,6 @@
 package com.notification;
 
-import com.example.DbConnection;
+import com.database.DbConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

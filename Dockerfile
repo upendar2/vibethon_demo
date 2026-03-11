@@ -30,7 +30,7 @@ COPY server.xml /usr/local/tomcat/conf/server.xml
 
 # Copy the .war file from the 'builder' stage
 # And deploy it as ROOT.war (which is best practice)
-COPY --from=builder /app/target/aumsccs.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=builder /app/target/vibethon.war /usr/local/tomcat/webapps/ROOT.war
 
 # Expose the standard Tomcat port
 EXPOSE 8080

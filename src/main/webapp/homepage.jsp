@@ -232,7 +232,7 @@
 <body>
 
     <%-- Include the header --%>
-   <%-- <%@ include file="/header/header.jsp" %> 
+    <%@ include file="/header/header.jsp" %> 
 
     <%-- Main content area --%>
     <main class="main-content">
@@ -346,7 +346,7 @@
     <div id="toast"></div>
 
     <%-- Include the footer --%>
-  <%-- <%@ include file="/header/footer.jsp" %> --%>  
+  <%@ include file="/header/footer.jsp" %> 
 
 </body>
 </html>

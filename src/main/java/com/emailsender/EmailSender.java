@@ -68,38 +68,61 @@ public class EmailSender {
 
     // --- RENDER METHOD: SENDGRID API ---
     private static boolean sendViaSendGrid(String to, String subject, String textBody, String htmlBody, List<EmailAttachment> attachments) {
-        com.sendgrid.helpers.mail.Mail mail = new com.sendgrid.helpers.mail.Mail(
-                new com.sendgrid.helpers.mail.objects.Email(FROM_EMAIL, FROM_NAME),
-                subject,
-                new com.sendgrid.helpers.mail.objects.Email(to),
-                new Content("text/plain", textBody)
-        );
-        mail.addContent(new Content("text/html", htmlBody));
-
-        // Handle Attachments for SendGrid
-        for (EmailAttachment att : attachments) {
-            Attachments sgA = new Attachments();
-            sgA.setContent(java.util.Base64.getEncoder().encodeToString(att.getContentBytes()));
-            sgA.setType(att.getMimeType());
-            sgA.setFilename(att.getFilename());
-            sgA.setDisposition("attachment");
-            mail.addAttachments(sgA);
-        }
-
-        SendGrid sg = new SendGrid(SENDGRID_API_KEY);
-        Request request = new Request();
         try {
+            // 1. Setup Mail Object
+            com.sendgrid.helpers.mail.objects.Email from = new com.sendgrid.helpers.mail.objects.Email(FROM_EMAIL, FROM_NAME);
+            com.sendgrid.helpers.mail.objects.Email recipient = new com.sendgrid.helpers.mail.objects.Email(to);
+            Content textContent = new Content("text/plain", textBody);
+            
+            com.sendgrid.helpers.mail.Mail mail = new com.sendgrid.helpers.mail.Mail(from, subject, recipient, textContent);
+            
+            if (htmlBody != null) {
+                mail.addContent(new Content("text/html", htmlBody));
+            }
+
+            // 2. Handle Attachments
+            for (EmailAttachment att : attachments) {
+                Attachments sgA = new Attachments();
+                sgA.setContent(java.util.Base64.getEncoder().encodeToString(att.getContentBytes()));
+                sgA.setType(att.getMimeType());
+                sgA.setFilename(att.getFilename());
+                sgA.setDisposition("attachment");
+                mail.addAttachments(sgA);
+            }
+
+            // 3. Execute Request
+            SendGrid sg = new SendGrid(SENDGRID_API_KEY);
+            Request request = new Request();
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
+
             com.sendgrid.Response response = sg.api(request);
-            return response.getStatusCode() >= 200 && response.getStatusCode() < 300;
+
+            // 4. Detailed Logging of Response
+            int statusCode = response.getStatusCode();
+            if (statusCode >= 200 && statusCode < 300) {
+                System.out.println("[SendGrid] Email sent successfully to: " + to);
+                return true;
+            } else {
+                System.err.println("[SendGrid] FAILED to send email.");
+                System.err.println("Status Code: " + statusCode);
+                System.err.println("Response Body: " + response.getBody());
+                System.err.println("Response Headers: " + response.getHeaders());
+                return false;
+            }
+
         } catch (IOException ex) {
+            System.err.println("[SendGrid] Network/IO Error occurred:");
+            ex.printStackTrace();
+            return false;
+        } catch (Exception ex) {
+            // This catches any other runtime errors (NullPointer, Base64 issues, etc.)
+            System.err.println("[SendGrid] An unexpected error occurred:");
             ex.printStackTrace();
             return false;
         }
     }
-
     // --- LOCAL METHOD: SMTP ---
     private static boolean sendViaSMTP(String to, String subject, String textBody, String htmlBody, List<EmailAttachment> attachments) {
         Properties props = new Properties();

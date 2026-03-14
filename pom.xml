@@ -22,9 +22,10 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0.0</version>
+			<version>6.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>jakarta.servlet.jsp</groupId>
 			<artifactId>jakarta.servlet.jsp-api</artifactId>
@@ -59,8 +60,9 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>2.0.13</version>
+			<version>2.0.7</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>jakarta.mail</groupId>
@@ -73,7 +75,7 @@
 			<artifactId>angus-mail</artifactId>
 			<version>2.0.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.eclipse.angus</groupId>
 			<artifactId>jakarta.mail</artifactId>

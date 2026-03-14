@@ -49,6 +49,12 @@ public class DbConnection {
         }
         return dataSource.getConnection();
     }
+    public static void shutdown() {
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
+            System.out.println("[DB-POOL] HikariPool-1 has been shut down successfully.");
+        }
+    }
 
     private DbConnection() {} // Prevent instantiation
 }
